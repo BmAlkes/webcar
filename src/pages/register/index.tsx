@@ -1,10 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logoCar.svg";
 import Container from "../../components/container";
 import Input from "../../components/input/indext";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createUserWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../../service/firebase";
+import { useEffect } from "react";
 
 const schema = z.object({
   name: z.string().nonempty("Field required"),
@@ -24,9 +31,25 @@ const RegisterPage = () => {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+  useEffect(() => {
+    async function handleLogout() {
+      await signOut(auth);
+    }
+    handleLogout;
+  }, []);
+  const navigate = useNavigate();
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const onSubmit = async (data: FormData) => {
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then(async (user) => {
+        await updateProfile(user.user, {
+          displayName: data.name,
+        });
+        navigate("/dashboard", { replace: true });
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
   };
 
   return (
@@ -71,7 +94,7 @@ const RegisterPage = () => {
             className="bg-zinc-900 rounded-md w-full text-center text-white h-10 font-medium"
             type="submit"
           >
-            Access
+            Register
           </button>
         </form>
         <p>

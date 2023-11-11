@@ -1,10 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logoCar.svg";
 import Container from "../../components/container";
 import Input from "../../components/input/indext";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from "../../service/firebase";
+import { useEffect } from "react";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email").nonempty("Email is mandatory"),
@@ -23,9 +26,24 @@ const LoginPage = () => {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function handleLogout() {
+      await signOut(auth);
+    }
+    handleLogout;
+  }, []);
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    signInWithEmailAndPassword(auth, data.email, data.password)
+      .then((user) => {
+        console.log(user);
+        navigate("/dashboard", { replace: true });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
