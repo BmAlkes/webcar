@@ -32,7 +32,7 @@ const LoginPage = () => {
     async function handleLogout() {
       await signOut(auth);
     }
-    handleLogout;
+    handleLogout();
   }, []);
 
   const onSubmit = (data: FormData) => {
@@ -66,6 +66,7 @@ const LoginPage = () => {
               register={register}
             />
           </div>
+
           <div className="mb-3">
             <Input
               placeholder="Type your password"

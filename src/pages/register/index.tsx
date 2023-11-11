@@ -35,7 +35,7 @@ const RegisterPage = () => {
     async function handleLogout() {
       await signOut(auth);
     }
-    handleLogout;
+    handleLogout();
   }, []);
   const navigate = useNavigate();
 
@@ -48,10 +48,9 @@ const RegisterPage = () => {
         navigate("/dashboard", { replace: true });
       })
       .catch((e) => {
-        console.log(e.message);
+        console.log(e);
       });
   };
-
   return (
     <Container>
       <div className="w-full min-h-screen  flex justify-center items-center flex-col gap-4">
@@ -72,6 +71,7 @@ const RegisterPage = () => {
               register={register}
             />
           </div>
+
           <div className="mb-3">
             <Input
               placeholder="Type your email"
@@ -81,6 +81,7 @@ const RegisterPage = () => {
               register={register}
             />
           </div>
+
           <div className="mb-3">
             <Input
               placeholder="Type your password"
