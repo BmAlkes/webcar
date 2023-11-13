@@ -15,7 +15,8 @@ import {
   uploadBytes,
   deleteObject,
 } from "firebase/storage";
-import { storage } from "../../../service/firebase";
+import { db, storage } from "../../../service/firebase";
+import { addDoc, collection } from "firebase/firestore";
 
 const schema = z.object({
   name: z.string().nonempty("name is required"),
@@ -90,7 +91,39 @@ const RegisterCar = () => {
   }
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    if (carImages.length === 0) {
+      alert("Please send an image of this car");
+      return;
+    }
+    const carListImage = carImages.map((car) => {
+      return {
+        uid: car.uid,
+        name: car.name,
+        url: car.url,
+      };
+    });
+
+    addDoc(collection(db, "cars"), {
+      name: data.name,
+      model: data.model,
+      whatsapp: data.whatsapp,
+      city: data.city,
+      year: data.year,
+      km: data.km,
+      price: data.price,
+      description: data.description,
+      created: new Date(),
+      owner: user?.name,
+      uid: user?.uid,
+      images: carListImage,
+    })
+      .then(() => {
+        reset();
+        setCarImages([]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleDeleteImage = async (item: ImageItemProps) => {
