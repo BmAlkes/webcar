@@ -1,7 +1,12 @@
-import React from "react";
+import Container from "../../components/container";
+import PanelHeader from "../../components/panelheader";
 
 const Dashboard = () => {
-  return <div>Dashboard</div>;
+  return (
+    <Container>
+      <PanelHeader />
+    </Container>
+  );
 };
 
 export default Dashboard;

@@ -21,7 +21,7 @@ const Home = () => {
       <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 ">
         <section className="shadow-lg w-full bg-white rounded-lg">
           <img
-            className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all"
+            className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all object-cover"
             src="https://image.webmotors.com.br/_fotos/anunciousados/gigante/2023/202311/20231104/chevrolet-tracker-1.2-turbo-flex-premier-automatico-wmimagem14535219438.jpg?s=fill&w=552&h=414&q=60"
             alt="Carro"
           />
