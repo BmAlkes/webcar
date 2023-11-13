@@ -1,7 +1,57 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import Container from "../../components/container";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { db } from "../../service/firebase";
 
+interface CarProps {
+  id: string;
+  name: string;
+  year: string;
+  km: string;
+  uid: string;
+  price: string | number;
+  images: CarImageProps[];
+  city: string;
+}
+interface CarImageProps {
+  name: string;
+  uid: string;
+  url: string;
+}
 const Home = () => {
+  const [allCars, setAllCars] = useState<CarProps[]>([]);
+
+  useEffect(() => {
+    function loadCars() {
+      const carsRef = collection(db, "cars");
+      const queryRef = query(carsRef, orderBy("created", "desc"));
+
+      getDocs(queryRef)
+        .then((snapshot) => {
+          const listcars = [] as CarProps[];
+
+          snapshot.forEach((doc) => {
+            listcars.push({
+              id: doc.id,
+              city: doc.data().city,
+              name: doc.data().name,
+              km: doc.data().km,
+              price: doc.data().price,
+              uid: doc.data().uid,
+              year: doc.data().year,
+              images: doc.data().images,
+            });
+          });
+          setAllCars(listcars);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+    loadCars();
+  }, []);
+
+  console.log(allCars);
   return (
     <Container>
       {/* section car */}
@@ -18,27 +68,36 @@ const Home = () => {
       <h1 className="font-bold text-center mt-6 text-2xl mb-4">
         New and used cars throughout Israel
       </h1>
-      <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 ">
-        <section className="shadow-lg w-full bg-white rounded-lg">
-          <img
-            className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all object-cover"
-            src="https://image.webmotors.com.br/_fotos/anunciousados/gigante/2023/202311/20231104/chevrolet-tracker-1.2-turbo-flex-premier-automatico-wmimagem14535219438.jpg?s=fill&w=552&h=414&q=60"
-            alt="Carro"
-          />
-          <p className="font-bold mt-1 mb-2 px-2">Chevrolet Tracket</p>
-          <div className="flex flex-col px-2">
-            <span className="text-zinc-700 mb-6">
-              Year 2020/2021 | 57.000 km
-            </span>
-            <strong className="text-black font-medium text-xl">116.000</strong>
+      {allCars.map((car) => {
+        return (
+          <main
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 "
+            key={car.id}
+          >
+            <section className="shadow-lg w-full bg-white rounded-lg">
+              <img
+                className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all object-cover"
+                src={car.images[0].url}
+                alt="Carro"
+              />
+              <p className="font-bold mt-1 mb-2 px-2">{car.name}</p>
+              <div className="flex flex-col px-2">
+                <span className="text-zinc-700 mb-6">
+                  Year {car.year} | {car.km} km
+                </span>
+                <strong className="text-black font-medium text-xl">
+                  <span className="text-2xl">₪</span> {car.price}
+                </strong>
 
-            <div className="w-full h-px bg-slate-200 my-2"></div>
-            <div className="px-2 pb-2">
-              <span className="text-zinc-700">Holon</span>
-            </div>
-          </div>
-        </section>
-      </main>
+                <div className="w-full h-px bg-slate-200 my-2"></div>
+                <div className="px-2 pb-2">
+                  <span className="text-zinc-700">{car.city}</span>
+                </div>
+              </div>
+            </section>
+          </main>
+        );
+      })}
     </Container>
   );
 };
