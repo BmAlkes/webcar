@@ -1,27 +1,43 @@
-# React + TypeScript + Vite
+<h2>🗄️LinkThrees Project</h2>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p><a href="">Link project</a></p>
 
-Currently, two official plugins are available:
+<img src=""/>
+<hr/>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<h2>📝 Description</h2>
+<p>Platform for selling and publishing cars, where you can add cars, delete cars, speak directly with the seller</p>
 
-## Expanding the ESLint configuration
+<hr/>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+<h2>📚Functionalities</h2>
+<p>Dashboard to managment a car platform</p>
+  <p>Register Car, Delete Car</p>
+  <p>Managment Accounts</p>
+  <hr/>
+<h3>🔧
+Technologies used
+Technology</h3>
 
-- Configure the top-level `parserOptions` property like this:
+<p>React, React Router Dom, Firebase, Tailwind, Firestore </p>
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+<hr/>
+<h2>🚀 Run Projext</h2>
+<p>To run the repository it is necessary to clone it, issue the following command to start the project: </p>
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+`git init`
+and after
+`npm run dev`
+
+<hr/>
+  
+<h3>🔜 future implementation</h3>
+ Pagination for more cars.
+ Review of clients
+  <hr/>
+<h3>  
+🤝 Colaboradores</h3>
+  
+<img src="https://www.github.com/BmAlkes.png" width="150px"/>
+BmAlkes
+<h2>🎯 Project Status</h2>
