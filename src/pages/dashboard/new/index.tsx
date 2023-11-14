@@ -17,6 +17,7 @@ import {
 } from "firebase/storage";
 import { db, storage } from "../../../service/firebase";
 import { addDoc, collection } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   name: z.string().nonempty("name is required"),
@@ -45,6 +46,7 @@ interface ImageItemProps {
 const RegisterCar = () => {
   const { user } = useContext(AuthContext);
   const [carImages, setCarImages] = useState<ImageItemProps[]>([]);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -120,6 +122,7 @@ const RegisterCar = () => {
       .then(() => {
         reset();
         setCarImages([]);
+        navigate("/dashboard");
       })
       .catch((err) => {
         console.log(err);
