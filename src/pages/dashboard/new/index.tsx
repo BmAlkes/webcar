@@ -18,6 +18,7 @@ import {
 import { db, storage } from "../../../service/firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   name: z.string().nonempty("name is required"),
@@ -94,7 +95,7 @@ const RegisterCar = () => {
 
   const onSubmit = (data: FormData) => {
     if (carImages.length === 0) {
-      alert("Please send an image of this car");
+      toast.error("Please send an image of this car");
       return;
     }
     const carListImage = carImages.map((car) => {
@@ -106,7 +107,7 @@ const RegisterCar = () => {
     });
 
     addDoc(collection(db, "cars"), {
-      name: data.name,
+      name: data.name.toUpperCase(),
       model: data.model,
       whatsapp: data.whatsapp,
       city: data.city,
@@ -122,6 +123,7 @@ const RegisterCar = () => {
       .then(() => {
         reset();
         setCarImages([]);
+        toast.success("Car register");
         navigate("/dashboard");
       })
       .catch((err) => {

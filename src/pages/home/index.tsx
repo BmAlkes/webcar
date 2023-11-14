@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Container from "../../components/container";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { db } from "../../service/firebase";
 import { Link } from "react-router-dom";
 
@@ -22,57 +22,97 @@ interface CarImageProps {
 const Home = () => {
   const [allCars, setAllCars] = useState<CarProps[]>([]);
   const [loadImages, setLoadImages] = useState<string[]>([]);
+  const [input, setInput] = useState("");
 
   useEffect(() => {
-    function loadCars() {
-      const carsRef = collection(db, "cars");
-      const queryRef = query(carsRef, orderBy("created", "desc"));
-
-      getDocs(queryRef)
-        .then((snapshot) => {
-          const listcars = [] as CarProps[];
-
-          snapshot.forEach((doc) => {
-            listcars.push({
-              id: doc.id,
-              city: doc.data().city,
-              name: doc.data().name,
-              km: doc.data().km,
-              price: doc.data().price,
-              uid: doc.data().uid,
-              year: doc.data().year,
-              images: doc.data().images,
-            });
-          });
-          setAllCars(listcars);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
     loadCars();
   }, []);
+
+  function loadCars() {
+    const carsRef = collection(db, "cars");
+    const queryRef = query(carsRef, orderBy("created", "desc"));
+
+    getDocs(queryRef)
+      .then((snapshot) => {
+        const listcars = [] as CarProps[];
+
+        snapshot.forEach((doc) => {
+          listcars.push({
+            id: doc.id,
+            city: doc.data().city,
+            name: doc.data().name,
+            km: doc.data().km,
+            price: doc.data().price,
+            uid: doc.data().uid,
+            year: doc.data().year,
+            images: doc.data().images,
+          });
+        });
+        setAllCars(listcars);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
 
   function handleImageLoad(id: string) {
     setLoadImages((prevImage) => [...prevImage, id]);
   }
+
+  const handleSearchCar = async () => {
+    if (input === "") {
+      loadCars();
+      return;
+    }
+
+    setAllCars([]);
+    setLoadImages([]);
+
+    const q = query(
+      collection(db, "cars"),
+      where("name", ">=", input.toUpperCase()),
+      where("name", "<=", input.toUpperCase() + "\uf8ff")
+    );
+    const querySnapshot = await getDocs(q);
+    const listcars = [] as CarProps[];
+
+    querySnapshot.forEach((doc) => {
+      listcars.push({
+        id: doc.id,
+        city: doc.data().city,
+        name: doc.data().name,
+        km: doc.data().km,
+        price: doc.data().price,
+        uid: doc.data().uid,
+        year: doc.data().year,
+        images: doc.data().images,
+      });
+    });
+    setAllCars(listcars);
+  };
+
   return (
     <Container>
       {/* section car */}
       <section className="bg-white rounded-lg  w-full max-w-3xl mx-auto flex items-center justify-center gap-2">
         <input
           type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
           placeholder="Type car name"
           className="w-full border-2 rounded-lg h-9 px-3 outline-none"
         />
-        <button className="bg-red-500 h-9 px-8 rounded-lg text-white font-medium text text-lg text-ellipsis">
+        <button
+          className="bg-red-500 h-9 px-8 rounded-lg text-white font-medium text text-lg text-ellipsis"
+          onClick={handleSearchCar}
+        >
           Search
         </button>
       </section>
       <h1 className="font-bold text-center mt-6 text-2xl mb-4">
         New and used cars throughout Israel
       </h1>
-      <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 ">
+      <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3  mb-5">
         {allCars.map((car) => {
           return (
             <Link to={`/car/${car.id}`} key={car.id}>
@@ -83,9 +123,13 @@ const Home = () => {
                     display: loadImages.includes(car.id) ? "none" : "block",
                   }}
                 ></div>
-
+                <div className="banner">
+                  <div className="line">
+                    <span className="text-sm text-white">New</span>
+                  </div>
+                </div>
                 <img
-                  className="w-full rounded-lg mb-2 max-h-72 hover:scale-105 transition-all object-cover"
+                  className=" relative w-full rounded-lg mb-2 max-h-72  object-cover"
                   src={car.images[0].url}
                   alt="Carro"
                   onLoad={() => handleImageLoad(car.id)}
